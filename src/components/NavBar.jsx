@@ -6,13 +6,13 @@ import logo from "../assets/logo.png";
 
 const links = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "Aboute" },
+  { to: "/about", label: "About" },
   { to: "/community", label: "Posts" },
 ];
 
 // Update these to the university's real contact details.
 const CONTACT_EMAIL = "info@imamuniversity.edu.so";
-const CONTACT_WHATSAPP = "2521337711"; // digits only, country code, no +
+const CONTACT_WHATSAPP = "252611337711"; // digits only, country code, no +
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
