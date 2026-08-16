@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-parchment text-ink font-body antialiased;
+  }
+  ::selection {
+    @apply bg-gold-300 text-navy-900;
+  }
+  :focus-visible {
+    outline: 2px solid #C9A24B;
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .font-feature-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Seal / ledger motif used behind hero */
+.ledger-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 39px,
+    rgba(11, 31, 58, 0.06) 40px
+  );
+}
+
+/* Torn-edge notice card top */
+.notice-pin::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #C9A24B;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
