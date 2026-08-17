@@ -155,7 +155,7 @@ export default function StudentOverview() {
                         {t.teacherName}
                       </p>
                       <p className="text-xs text-navy-500">
-                        {t.records.length} maalmood ·{" "}
+                        {t.records.length} Days ·{" "}
                         <span className="text-sage">{t.present} xaadir</span> ·{" "}
                         <span className="text-rose">{t.absent} maqan</span>
                       </p>

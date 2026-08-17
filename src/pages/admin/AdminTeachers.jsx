@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, X, AlertTriangle } from "lucide-react";
 import { addTeacher, getTeachers, deleteTeacher, getDepartments } from "../../firebase/admin";
 import toast from "react-hot-toast";
 
 const SEMESTERS = Array.from({ length: 10 }, (_, i) => `Semester_${i + 1}`);
+
+const FULL_TIME_DAYS = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"];
+const PART_TIME_DAYS = ["Thursday", "Friday"];
 
 const emptyForm = {
   fullName: "",
@@ -17,13 +20,21 @@ const emptyAssignment = {
   semester: "",
   subject: "",
   employment: "full_time",
+  day: "",
 };
 
 function formatAssignment(a) {
   const dept = a.department || "—";
   const sem = a.semester ? a.semester.replace("Semester_", "S") : "—";
   const subj = a.subject || a.className || "—";
-  return `${dept}/${sem}/${subj}`;
+  const day = a.day ? ` · ${a.day}` : "";
+  return `${dept}/${sem}/${subj}${day}`;
+}
+
+// True when the draft has enough filled in that it looks like the admin
+// meant to add it as an assignment, but never clicked "Ku dar Assignment".
+function draftHasUnsavedContent(draft) {
+  return !!(draft.department || draft.semester || draft.subject.trim() || draft.day);
 }
 
 export default function AdminTeachers() {
@@ -50,16 +61,31 @@ export default function AdminTeachers() {
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleAssignmentChange = (e) =>
-    setAssignmentDraft((a) => ({ ...a, [e.target.name]: e.target.value }));
+  const handleAssignmentChange = (e) => {
+    const { name, value } = e.target;
+    setAssignmentDraft((a) => {
+      if (name === "employment") {
+        return { ...a, employment: value, day: "" };
+      }
+      return { ...a, [name]: value };
+    });
+  };
+
+  const dayOptions =
+    assignmentDraft.employment === "part_time" ? PART_TIME_DAYS : FULL_TIME_DAYS;
 
   const addAssignment = () => {
     if (!assignmentDraft.department || !assignmentDraft.semester || !assignmentDraft.subject.trim()) {
       toast.error("Department, semester iyo subject waa lagama maarmaan.");
-      return;
+      return false;
+    }
+    if (!assignmentDraft.day) {
+      toast.error("Fadlan dooro maalinta uu xaadirinayo.");
+      return false;
     }
     setAssignments((a) => [...a, assignmentDraft]);
-    setAssignmentDraft(emptyAssignment);
+    setAssignmentDraft({ ...emptyAssignment, employment: assignmentDraft.employment });
+    return true;
   };
 
   const removeAssignment = (idx) =>
@@ -81,18 +107,51 @@ export default function AdminTeachers() {
       toast.error("Password waa lagama maarmaan.");
       return;
     }
-    if (assignments.length === 0) {
-      toast.error("Ku dar ugu yaraan hal assignment (department + semester + subject).");
+
+    // Safety net: the admin filled the assignment builder fields but
+    // forgot to press "Ku dar Assignment" — this is exactly the bug
+    // that silently drops a second/third assignment. Catch it here
+    // instead of letting the teacher get saved with fewer assignments
+    // than intended.
+    let finalAssignments = assignments;
+    if (draftHasUnsavedContent(assignmentDraft)) {
+      const complete =
+        assignmentDraft.department &&
+        assignmentDraft.semester &&
+        assignmentDraft.subject.trim() &&
+        assignmentDraft.day;
+      if (complete) {
+        const confirmed = confirm(
+          "Waxaa jira assignment aad buuxisay laakiin aadan riixin \"Ku dar Assignment\". Ma rabtaa in la daro?"
+        );
+        if (confirmed) {
+          finalAssignments = [...assignments, assignmentDraft];
+          setAssignments(finalAssignments);
+          setAssignmentDraft({ ...emptyAssignment, employment: assignmentDraft.employment });
+        }
+      } else {
+        toast.error(
+          "Waxaa jira assignment aan dhamaystirneyn (Department/Semester/Subject/Maalin). Dhamaystir ama nadiifi ka hor inta aadan Teacher-ka kaydin."
+        );
+        return;
+      }
+    }
+
+    if (finalAssignments.length === 0) {
+      toast.error("Ku dar ugu yaraan hal assignment (department + semester + subject + maalin).");
       return;
     }
+
     setSaving(true);
     try {
       await addTeacher({
         ...form,
         username: form.username.trim(),
-        assignments,
+        assignments: finalAssignments,
       });
-      toast.success("Teacherkii waa la daray!");
+      toast.success(
+        `Teacherkii waa la daray! (${finalAssignments.length} assignment)`
+      );
       resetForm();
       load();
     } catch (err) {
@@ -108,14 +167,16 @@ export default function AdminTeachers() {
     load();
   };
 
+  const draftPending = draftHasUnsavedContent(assignmentDraft);
+
   return (
     <div>
       <h1 className="font-display text-2xl font-semibold text-navy-800">
         Teachers
       </h1>
       <p className="mt-1 text-sm text-navy-500">
-        Ku dar Teachers cusub. Teacher kastaa wuxuu yeelan karaa dhawr
-        department, semester iyo subject oo kala duwan.
+        Add new teachers to the portal. Each teacher can be assigned to multiple departments, semesters, subjects, and different teaching days. A single teacher may teach across up to 10 semesters, with different subjects assigned to each semester.
+
       </p>
 
       <form
@@ -135,9 +196,9 @@ export default function AdminTeachers() {
           onChange={handleChange}
           className="rounded-md border border-navy-100 px-3 py-2.5 text-sm outline-none focus:border-gold-400"
         >
-          <option value="">Jinsiga</option>
-          <option value="Lab">Lab</option>
-          <option value="Dhedig">Dhedig</option>
+          <option value="">Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
         </select>
         <input
           name="username"
@@ -158,9 +219,9 @@ export default function AdminTeachers() {
         {/* Assignment builder */}
         <div className="sm:col-span-2 rounded-lg border border-navy-100 bg-navy-50/40 p-4">
           <p className="mb-2 text-xs font-semibold text-navy-600">
-            Ku dar Assignment (Department + Semester + Subject + Nooca)
+            Ku dar Assignment (Department + Semester + Subject + Nooca + Maalinta)
           </p>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-5">
             <select
               name="department"
               value={assignmentDraft.department}
@@ -203,7 +264,34 @@ export default function AdminTeachers() {
               <option value="full_time">Full Time</option>
               <option value="part_time">Part Time</option>
             </select>
+            <select
+              name="day"
+              value={assignmentDraft.day}
+              onChange={handleAssignmentChange}
+              className="rounded-md border border-navy-100 px-2.5 py-2 text-xs outline-none focus:border-gold-400"
+            >
+              <option value="">Maalinta</option>
+              {dayOptions.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
           </div>
+          <p className="mt-1.5 text-[11px] text-navy-400">
+            {assignmentDraft.employment === "part_time"
+              ? "Part Time: dooro hal maalin — Thursday ama Friday."
+              : "Full Time: dooro hal maalin oo ka mid ah Saturday–Wednesday."}
+          </p>
+
+          {draftPending && (
+            <div className="mt-2 flex items-center gap-1.5 rounded-md bg-gold-100 px-3 py-2 text-[11px] font-medium text-gold-700">
+              <AlertTriangle size={13} />
+              Ha ilaawin inaad riixdo "Ku dar Assignment" ka hor inta aadan
+              Teacher-ka kaydin — haddii kale assignment-kan lama keydin doono.
+            </div>
+          )}
+
           <button
             type="button"
             onClick={addAssignment}
@@ -215,6 +303,9 @@ export default function AdminTeachers() {
 
           {assignments.length > 0 && (
             <div className="mt-3 space-y-1.5">
+              <p className="text-[11px] font-semibold text-navy-500">
+                {assignments.length} assignment oo la diyaariyay:
+              </p>
               {assignments.map((a, i) => (
                 <div
                   key={i}
@@ -230,7 +321,8 @@ export default function AdminTeachers() {
                       }
                     >
                       {a.employment === "full_time" ? "Full Time" : "Part Time"}
-                    </span>
+                    </span>{" "}
+                    · <span className="font-semibold">{a.day || "—"}</span>
                   </span>
                   <button
                     type="button"

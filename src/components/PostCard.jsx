@@ -10,9 +10,9 @@ function timeAgo(ts) {
   if (!ts?.toDate) return "";
   const diff = (Date.now() - ts.toDate().getTime()) / 1000;
   if (diff < 60) return "Hadda";
-  if (diff < 3600) return `${Math.floor(diff / 60)} daqiiqo`;
+  if (diff < 3600) return `${Math.floor(diff / 60)} minutes `;
   if (diff < 86400) return `${Math.floor(diff / 3600)} saac`;
-  return `${Math.floor(diff / 86400)} maalmood`;
+  return `${Math.floor(diff / 86400)} Days`;
 }
 
 function mediaGridClass(count) {

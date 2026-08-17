@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { LayoutDashboard, GraduationCap, Users2, MessagesSquare, Building2, UsersRound, CalendarClock, IdCard, Layers, Settings } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Users2, MessagesSquare, Building2, UsersRound, CalendarClock, IdCard, Layers, Settings, CalendarOff } from "lucide-react";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import AdminOverview from "./AdminOverview";
 import AdminDepartments from "./AdminDepartments";
@@ -7,6 +7,7 @@ import AdminStudents from "./AdminStudents";
 import AdminTeachers from "./AdminTeachers";
 import AdminAllTeachers from "./AdminAllTeachers";
 import AdminAttendance from "./AdminAttendance";
+import AdminHolidays from "./AdminHolidays";
 import CreateIdCard from "./CreateIdCard";
 import AllIdCards from "./AllIdCards";
 import AdminCommunity from "./AdminCommunity";
@@ -19,6 +20,7 @@ const navItems = [
   { to: "/admin/departments", label: "classes", icon: Building2 },
   { to: "/admin/all-teachers", label: "All Teachers", icon: UsersRound },
   { to: "/admin/attendance", label: "Attendance", icon: CalendarClock },
+  { to: "/admin/holidays", label: "Holidays", icon: CalendarOff },
   { to: "/admin/create-id-card", label: "Create ID Cards", icon: IdCard },
   { to: "/admin/all-id-cards", label: "All ID Cards", icon: Layers },
   { to: "/admin/community", label: "Posts", icon: MessagesSquare },
@@ -35,6 +37,7 @@ export default function AdminDashboard() {
         <Route path="teachers" element={<AdminTeachers />} />
         <Route path="all-teachers" element={<AdminAllTeachers />} />
         <Route path="attendance" element={<AdminAttendance />} />
+        <Route path="holidays" element={<AdminHolidays />} />
         <Route path="create-id-card" element={<CreateIdCard />} />
         <Route path="all-id-cards" element={<AllIdCards />} />
         <Route path="community" element={<AdminCommunity />} />

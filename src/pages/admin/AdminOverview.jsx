@@ -34,7 +34,8 @@ export default function AdminOverview() {
         Overview
       </h1>
       <p className="mt-1 text-sm text-navy-500">
-        Halkan waxaad ka arkaysaa dhammaan tirakoobka portal-ka.
+        Here, you can view a complete overview of all portal statistics and key performance data in one place.
+
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">

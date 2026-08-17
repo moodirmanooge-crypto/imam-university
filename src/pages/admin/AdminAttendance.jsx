@@ -10,9 +10,10 @@ import {
   Building2,
   GraduationCap,
   Calendar,
+  CalendarOff,
 } from "lucide-react";
 import { getAllAttendance, updateAttendanceRecordStatus } from "../../firebase/attendance";
-import { getStudents } from "../../firebase/admin";
+import { getStudents, getHolidays } from "../../firebase/admin";
 import toast from "react-hot-toast";
 
 const STATUS_OPTIONS = [
@@ -40,30 +41,40 @@ function initials(name) {
 export default function AdminAttendance() {
   const [records, setRecords] = useState([]);
   const [studentsById, setStudentsById] = useState({});
+  const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(null);
   const [filterDept, setFilterDept] = useState("");
   const [filterTeacher, setFilterTeacher] = useState("");
   const [filterDate, setFilterDate] = useState("");
 
-  // Pending local edits per record before Save is pressed:
-  // { [recordId]: { [studentId]: newStatus } }
   const [pendingEdits, setPendingEdits] = useState({});
   const [savingId, setSavingId] = useState(null);
 
   const load = async () => {
     setLoading(true);
-    const [att, students] = await Promise.all([getAllAttendance(), getStudents()]);
+    const [att, students, hols] = await Promise.all([
+      getAllAttendance(),
+      getStudents(),
+      getHolidays().catch(() => []),
+    ]);
     setRecords(att);
     const map = {};
     students.forEach((s) => (map[s.id] = s));
     setStudentsById(map);
+    setHolidays(hols);
     setLoading(false);
   };
 
   useEffect(() => {
     load();
   }, []);
+
+  // For a given attendance record's date, find the holiday it falls
+  // within (if any) so the admin can see the teacher was on holiday
+  // that day rather than assuming they simply didn't submit.
+  const holidayForDate = (dateStr) =>
+    holidays.find((h) => h.startDate <= dateStr && dateStr <= h.endDate);
 
   const departments = [...new Set(records.map((r) => r.department).filter(Boolean))];
   const teachers = [...new Set(records.map((r) => r.teacherName).filter(Boolean))];
@@ -193,6 +204,7 @@ export default function AdminAttendance() {
           const isOpen = expanded === r.id;
           const presentCount = r.records?.filter((x) => x.status === "present").length || 0;
           const dirty = hasPendingChanges(r.id);
+          const holiday = holidayForDate(r.date);
 
           return (
             <div key={r.id} className="overflow-hidden rounded-xl border border-navy-100 bg-white shadow-sm">
@@ -205,8 +217,14 @@ export default function AdminAttendance() {
                     <CalendarClock size={17} />
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-navy-800">
+                    <p className="flex items-center gap-2 text-sm font-semibold text-navy-800">
                       {r.teacherName} <span className="text-navy-300">·</span> {r.subject}
+                      {holiday && (
+                        <span className="flex items-center gap-1 rounded-full bg-rose/10 px-2 py-0.5 text-[10px] font-semibold text-rose">
+                          <CalendarOff size={10} />
+                          Fasax: {holiday.title}
+                        </span>
+                      )}
                     </p>
                     <p className="text-xs text-navy-500">
                       {r.department} · {r.semester?.replace("_", " ")} ·{" "}
@@ -234,6 +252,12 @@ export default function AdminAttendance() {
 
               {isOpen && (
                 <div className="border-t border-navy-50">
+                  {holiday && (
+                    <div className="flex items-center gap-2 bg-rose/5 px-5 py-2.5 text-xs text-rose">
+                      <CalendarOff size={13} />
+                      Taariikhdan ({r.date}) waxay ku dhex jirtaa fasaxa <strong>{holiday.title}</strong> ({holiday.startDate} → {holiday.endDate}).
+                    </div>
+                  )}
                   {r.records?.map((rec, i) => {
                     const student = studentsById[rec.studentId];
                     const displayStatus = getDisplayStatus(r, rec.studentId, rec.status);

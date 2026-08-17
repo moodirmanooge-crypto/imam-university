@@ -6,9 +6,11 @@ import {
   getDoc,
   getDocs,
   updateDoc,
+  deleteDoc,
   serverTimestamp,
   query,
   orderBy,
+  where,
 } from "firebase/firestore";
 import { db } from "./config";
 import { COLLECTIONS } from "./collections";
@@ -55,6 +57,7 @@ export async function deleteDepartment(id) {
 // ---- Students ----
 export async function addStudent(studentId, data) {
   await setDoc(doc(db, COLLECTIONS.STUDENTS, studentId), {
+    employment: "full_time",
     ...data,
     pendingDeletion: false,
     createdAt: serverTimestamp(),
@@ -74,6 +77,7 @@ export async function bulkAddStudents(entries) {
       department: entry.department || "",
       faculty: entry.faculty || "",
       semester: entry.semester || "",
+      employment: entry.employment || "full_time",
       password: entry.password || "",
       pendingDeletion: false,
       createdAt: serverTimestamp(),
@@ -104,6 +108,24 @@ export async function bulkUpdateStudentSemester(studentIds, newSemester) {
       updateDoc(doc(db, COLLECTIONS.STUDENTS, id), { semester: newSemester })
     )
   );
+}
+
+// Moves every student in a department + semester to a new semester in
+// one go — used when an admin transfers a teacher's assignment
+// semester on AdminAllTeachers, so the whole class follows along
+// rather than just the teacher's own record.
+export async function bulkUpdateStudentSemesterByDept(department, oldSemester, newSemester) {
+  const q = query(
+    collection(db, COLLECTIONS.STUDENTS),
+    where("department", "==", department),
+    where("semester", "==", oldSemester)
+  );
+  const snap = await getDocs(q);
+  const ids = snap.docs.map((d) => d.id);
+  await Promise.all(
+    ids.map((id) => updateDoc(doc(db, COLLECTIONS.STUDENTS, id), { semester: newSemester }))
+  );
+  return ids.length;
 }
 
 // ---- Teachers ----
@@ -164,4 +186,29 @@ export async function deleteClass(classId) {
   await updateDoc(doc(db, COLLECTIONS.CLASSES, classId), {
     pendingDeletion: true,
   });
+}
+
+// ---- Holidays ----
+// { title, startDate: "YYYY-MM-DD", endDate: "YYYY-MM-DD" }
+// Attendance is blocked for every teacher on any date that falls
+// within [startDate, endDate] of an active holiday.
+export async function addHoliday({ title, startDate, endDate }) {
+  const ref = await addDoc(collection(db, COLLECTIONS.HOLIDAYS), {
+    title: title.trim(),
+    startDate,
+    endDate,
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function getHolidays() {
+  const snap = await getDocs(
+    query(collection(db, COLLECTIONS.HOLIDAYS), orderBy("startDate", "desc"))
+  );
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+export async function deleteHoliday(id) {
+  await deleteDoc(doc(db, COLLECTIONS.HOLIDAYS, id));
 }

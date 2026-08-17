@@ -18,8 +18,13 @@ const emptyForm = {
   department: "",
   faculty: "",
   semester: "",
+  employment: "full_time",
   password: "",
 };
+
+function employmentLabel(e) {
+  return e === "part_time" ? "Part Time" : "Full Time";
+}
 
 export default function AdminStudents() {
   const [students, setStudents] = useState([]);
@@ -35,6 +40,7 @@ export default function AdminStudents() {
   const [bulkDept, setBulkDept] = useState("");
   const [bulkFaculty, setBulkFaculty] = useState("");
   const [bulkSemester, setBulkSemester] = useState("");
+  const [bulkEmployment, setBulkEmployment] = useState("full_time");
   const [bulkText, setBulkText] = useState("");
   const [bulkSaving, setBulkSaving] = useState(false);
 
@@ -77,7 +83,7 @@ export default function AdminStudents() {
 
   // Parses lines like:
   // 0001, GUULEED IBRAAHIM DAAHIR, male, 1234
-  // studentId, fullName, gender, password  (department + semester shared, set above)
+  // studentId, fullName, gender, password  (department + semester + employment shared, set above)
   const parseBulkText = () => {
     return bulkText
       .split("\n")
@@ -94,6 +100,7 @@ export default function AdminStudents() {
           department: bulkDept,
           faculty: bulkFaculty,
           semester: bulkSemester,
+          employment: bulkEmployment,
         };
       });
   };
@@ -154,7 +161,8 @@ export default function AdminStudents() {
         Students
       </h1>
       <p className="mt-1 text-sm text-navy-500">
-        Ku dar Students cusub, ama maamul kuwa jira.
+        Add new students or manage existing ones. Full-Time and Part-Time students within the same semester must be treated as two separate groups.
+
       </p>
 
       {/* Mode toggle */}
@@ -244,6 +252,15 @@ export default function AdminStudents() {
               </option>
             ))}
           </select>
+          <select
+            name="employment"
+            value={form.employment}
+            onChange={handleChange}
+            className="rounded-md border border-navy-100 px-3 py-2.5 text-sm outline-none focus:border-gold-400"
+          >
+            <option value="full_time">Full Time</option>
+            <option value="part_time">Part Time</option>
+          </select>
           <input
             name="password"
             type="password"
@@ -268,7 +285,7 @@ export default function AdminStudents() {
           onSubmit={handleBulkSubmit}
           className="mt-4 space-y-4 rounded-xl border border-navy-100 bg-white p-6"
         >
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
             <select
               value={bulkDept}
               onChange={(e) => setBulkDept(e.target.value)}
@@ -299,7 +316,21 @@ export default function AdminStudents() {
                 </option>
               ))}
             </select>
+            <select
+              value={bulkEmployment}
+              onChange={(e) => setBulkEmployment(e.target.value)}
+              className="rounded-md border border-navy-100 px-3 py-2.5 text-sm outline-none focus:border-gold-400"
+            >
+              <option value="full_time">Full Time</option>
+              <option value="part_time">Part Time</option>
+            </select>
           </div>
+          <p className="text-[11px] text-navy-400">
+            Dhammaan ardayda safaftan waxay wada noqon doonaan{" "}
+            <strong>{employmentLabel(bulkEmployment)}</strong>. Haddii aad
+            rabto Full Time iyo Part Time labadaba semester-kan, gudbi laba
+            batch oo gooni ah.
+          </p>
 
           <div>
             <p className="mb-1.5 text-xs font-medium text-navy-500">
@@ -317,7 +348,7 @@ export default function AdminStudents() {
           {previewEntries.length > 0 && (
             <div className="rounded-md border border-gold-200 bg-gold-50 p-3">
               <p className="text-xs font-semibold text-navy-700">
-                {previewEntries.length} Student la diyaariyay ({bulkDept || "?"} / {bulkSemester ? bulkSemester.replace("_", " ") : "?"})
+                {previewEntries.length} Student la diyaariyay ({bulkDept || "?"} / {bulkSemester ? bulkSemester.replace("_", " ") : "?"} / {employmentLabel(bulkEmployment)})
               </p>
               <div className="mt-2 max-h-32 space-y-1 overflow-y-auto">
                 {previewEntries.map((en, i) => (
@@ -359,6 +390,7 @@ export default function AdminStudents() {
               <th className="px-4 py-3">Qaybta</th>
               <th className="px-4 py-3">Kuliyada</th>
               <th className="px-4 py-3">Semester</th>
+              <th className="px-4 py-3">Nooca</th>
               <th className="px-4 py-3">Password</th>
               <th className="px-4 py-3"></th>
             </tr>
@@ -366,14 +398,14 @@ export default function AdminStudents() {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-navy-400">
+                <td colSpan={8} className="px-4 py-6 text-center text-navy-400">
                   Soo dejinaya...
                 </td>
               </tr>
             )}
             {!loading && filteredStudents.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-navy-400">
+                <td colSpan={8} className="px-4 py-6 text-center text-navy-400">
                   {students.length === 0
                     ? "Weli Student lama darin."
                     : "Wax natiijo ah lama helin."}
@@ -390,6 +422,17 @@ export default function AdminStudents() {
                 <td className="px-4 py-3 text-navy-500">{s.faculty}</td>
                 <td className="px-4 py-3 text-navy-500">
                   {s.semester?.replace("_", " ")}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                      s.employment === "part_time"
+                        ? "bg-gold-100 text-gold-700"
+                        : "bg-sage/15 text-sage"
+                    }`}
+                  >
+                    {employmentLabel(s.employment)}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1.5">
