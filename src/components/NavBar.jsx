@@ -42,7 +42,7 @@ export default function NavBar() {
             <img src={logo} alt="Jaamacadda Imam University" className="h-full w-full object-cover" />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-parchment">
-            Jaamacadda Imam University
+            Imam University
           </span>
         </Link>
 

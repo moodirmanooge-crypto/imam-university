@@ -13,9 +13,9 @@ import { subscribeToPosts } from "../firebase/posts";
 import PostCard from "../components/PostCard";
 
 const stats = [
-  { label: "Kuliyado", value: "6" },
-  { label: "Qaybo", value: "24" },
-  { label: "Students diiwaangashan", value: "3,200+" },
+  { label: "Department", value: "6" },
+  { label: "Faculty", value: "24" },
+  { label: "Students ", value: "3,200+" },
 ];
 
 const features = [
@@ -106,14 +106,15 @@ export default function Home() {
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-500/40 bg-gold-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-gold-300">
               <BookOpenCheck size={14} />
-              Diiwaanka Tacliinta ee Casriga ah
+              Modern Academic Records System
             </span>
             <h1 className="font-display text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl">
               IMAM UNIVERSITY —
               <span className="text-gold-400"> .</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-navy-100 sm:text-lg">
-              Portal-ka rasmiga ah ee jaamacadda: Ardayda, macallimiinta, maamulka iyo adeegyada jaamacadda dhammaantood waxay ku midoobaan hal nidaam — si fudud, degdeg ah, oo casri ah.
+              The university’s official digital portal brings together students, faculty, administration, and all university services in one secure, simple, and efficient system — making academic management easier, faster, and more accessible.
+
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -127,7 +128,7 @@ export default function Home() {
                 to="/community"
                 className="flex items-center justify-center gap-2 rounded-md border border-navy-300/30 bg-white/5 px-7 py-3.5 text-sm font-semibold text-parchment transition-colors hover:bg-white/10"
               >
-                Eeg Post
+                View Post
               </Link>
             </div>
           </div>
@@ -180,7 +181,7 @@ export default function Home() {
                 to="/community"
                 className="inline-flex items-center gap-2 rounded-md bg-navy-700 px-6 py-3 text-sm font-semibold text-parchment transition-colors hover:bg-navy-600"
               >
-                Eeg Dhammaan Post
+                View All Post
                 <ArrowRight size={15} strokeWidth={2.5} />
               </Link>
             </div>

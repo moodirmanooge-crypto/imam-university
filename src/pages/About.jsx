@@ -91,10 +91,10 @@ export default function About() {
           className="absolute inset-0 h-full w-full object-cover opacity-40"
         />
         <div className="relative z-10 px-4">
-          <h1 className="text-5xl font-extrabold tracking-tight">About Us</h1>
+          <h1 className="text-5xl font-extrabold tracking-tight"></h1>
           <p className="mt-4 text-sm text-white/90">
-            <span>Home</span> <span className="mx-1">/</span>{" "}
-            <span>About</span>
+            <span></span> <span className="mx-1"></span>{" "}
+            <span></span>
           </p>
         </div>
       </section>

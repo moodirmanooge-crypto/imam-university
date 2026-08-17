@@ -67,6 +67,18 @@ export default function Community() {
     return unsub;
   }, []);
 
+  // Pinned-ka marwalba kor, kadibna kan ugu dambeeyay la pin-gareeyay,
+  // kadibna kuwa kale sida caadiga ah (ugu cusub kor). Waxaan halkan ku
+  // sameynaa (ma aha PostCard.jsx gudihiisa) sababtoo ah PostCard hal
+  // post kaliya buu bixiyaa — liiska oo dhan halkan ayuu ku jiraa.
+  const sortedPosts = [...posts].sort((a, b) => {
+    if (!!b.pinned !== !!a.pinned) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+    if (a.pinned && b.pinned) {
+      return (b.pinnedAt?.toMillis?.() || 0) - (a.pinnedAt?.toMillis?.() || 0);
+    }
+    return (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0);
+  });
+
   // Only ask a guest for a name/photo. A logged-in portal user (any
   // role) already has an identity via useAuth() and should never see
   // this gate.
@@ -114,21 +126,21 @@ export default function Community() {
             <span className="text-2xl">📣</span>
           </span>
           <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Post <span className="text-gold-400">Jaamacadda</span>
+            Post <span className="text-gold-400">University</span>
           </h1>
           <p className="mt-2 text-sm text-navy-100">
-            Ogeysiisyada, sawirada iyo dhacdooyinka ugu dambeeyay
+            Latest Announcements, Photos & Events
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         {/* No composer here — posting only happens from /admin/community.
-            This page is always view-only for like/comment/share, and
-            PostCard itself decides edit/delete visibility from the
-            logged-in user's real role (admin sees controls, everyone
-            else does not) — hideActions is not needed here since a
-            non-admin identity never gets edit rights anyway. */}
+            This page is always view-only: hideActions=true forces edit,
+            delete, pin, and like-boost OFF for every visitor here,
+            including a logged-in admin browsing the public page. Those
+            controls only ever appear inside the admin panel, where
+            PostCard is rendered WITHOUT hideActions. */}
 
         {loading && (
           <p className="text-center text-sm text-navy-400">Soo dejinaya...</p>
@@ -143,8 +155,8 @@ export default function Community() {
         )}
 
         <div className="space-y-5">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} communityProfile={profile} />
+          {sortedPosts.map((post) => (
+            <PostCard key={post.id} post={post} communityProfile={profile} hideActions />
           ))}
         </div>
       </section>

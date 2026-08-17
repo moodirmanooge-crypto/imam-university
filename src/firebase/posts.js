@@ -1,3 +1,4 @@
+//src/firebase/post.js
 import {
   addDoc,
   collection,
@@ -94,7 +95,31 @@ export function subscribeToComments(postId, callback) {
     callback(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
   });
 }
+// Ku-darid: src/firebase/posts.js
+// Fadlan hubi in db iyo doc/updateDoc/increment horeba laga soo import gareeyay
+// faylkan (sida functions-ka kale ee toggleLike, updatePostText isticmaalaan).
 
+// PIN — admin ayaa toos u boggeeya post-ka feed-ka. `pinned` waa boolean,
+// `pinnedAt` waxaan u kaydinnaa serverTimestamp si loo ogaado goorma la
+// taagay (haddii mar dambe la rabo tallaabo sida "kan ugu dambeeyay pinned").
+export async function setPostPinned(postId, pinned) {
+  const ref = doc(db, "posts", postId);
+  await updateDoc(ref, {
+    pinned,
+    pinnedAt: pinned ? serverTimestamp() : null,
+  });
+}
+
+// LIKE BOOST — waxay kordhisaa (ama dhimaysaa haddii amount negative yahay)
+// field-ka `bonusLikes`, oo ku daraya total-ka like-ga la muujinayo, iyada
+// oo aan taaban array-ka `likes` (kaas oo weli ka mas'uul ah toggle-like-ka
+// dhabta ah ee users-ka).
+export async function adjustBonusLikes(postId, amount) {
+  const ref = doc(db, "posts", postId);
+  await updateDoc(ref, {
+    bonusLikes: increment(amount),
+  });
+}
 // Comment now also carries the commenter's photo (data URL or empty
 // string) alongside their name, so their avatar shows next to every
 // comment they leave — sourced from the visitor's local community
