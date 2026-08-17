@@ -37,7 +37,7 @@ const features = [
   {
     icon: ShieldCheck,
     title: "Xogta Sugan",
-    desc: "Diiwaanka Studentga iyo xaadirintiisu waxay ku kaydsan yihiin nidaam ammaan leh oo Firestore ku shaqeeya.",
+    desc: "Diiwaanka Studentga iyo xaadirintiisu waxay ku kaydsan yihiin nidaam ammaan leh oo server omline  ku shaqeeya.",
   },
 ];
 

@@ -1,3 +1,4 @@
+//src/pages/aboute.jsx
 import {
   Calendar,
   Users,
@@ -16,6 +17,7 @@ import heroImage from "../assets/imam.png";
 import background from "../assets/background.png";
 import objectivesImage from "../assets/IMAGE.png";
 import logo from "../assets/logo.png";
+import useDisableDevTools from "../hooks/useDisableDevTools"; // xanib F12 iyo devtools-ka
 
 const stats = [
   { icon: Calendar, value: "13+", label: "year of experience" },
@@ -77,6 +79,8 @@ const coreValues = [
 ];
 
 export default function About() {
+  useDisableDevTools(); // xanib F12, right-click, iyo shortcuts-ka DevTools-ka
+
   return (
     <div>
       {/* Hero */}
