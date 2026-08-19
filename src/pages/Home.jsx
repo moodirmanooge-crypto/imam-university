@@ -65,7 +65,7 @@ const features = [
   {
     icon: CalendarCheck2,
     title: "Automatic Attendance",
-    desc: "**Teachers record attendance for each class in one row, while students can instantly view their attendance history.**.",
+    desc: "Teachers record attendance for each class in one row, while students can instantly view their attendance history.",
   },
   {
     icon: Users2,
@@ -247,10 +247,10 @@ export default function Home() {
                 <MessagesSquare size={18} />
               </span>
               <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-navy-700 sm:text-4xl">
-                Post <span className="text-gold-500">Jaamacadda</span>
+                University <span className="text-gold-500">Post</span>
               </h2>
               <p className="mt-2 text-navy-500">
-                Ogeysiisyada iyo dhacdooyinka ugu dambeeyay
+                Latest Announcements & Events
               </p>
             </div>
 
@@ -283,10 +283,10 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-semibold tracking-tight text-navy-700 sm:text-4xl">
-            Wax kasta oo aad u baahan tahay
+            Everything You Need in One Place
           </h2>
           <p className="mt-3 text-navy-500">
-            Nidaam dhamaystiran oo u gaar ah maamulka fasalka iyo xaadirinta.
+            A complete system designed to simplify university management and attendance.
           </p>
         </div>
 

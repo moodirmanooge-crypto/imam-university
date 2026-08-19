@@ -217,8 +217,8 @@ export default function PostCard({ post, hideActions = false, communityProfile =
   // shareText: qoraalka la geynayo — hadduu post-ku qoraal lahaa, isku dar.
   const shareUrl = `${window.location.origin}/community#${post.id}`;
   const shareText = post.text?.trim()
-    ? `${post.text.trim()}\n\n— Jaamacadda Imam University`
-    : "Eeg boostadan Jaamacadda Imam University";
+    ? `${post.text.trim()}\n\n— University Imam University`
+    : "Eeg boostadan University Imam University";
   const firstImage = media.find((m) => m.type !== "video");
 
   // Isku day inaan la Shareo SAWIRKA (file) sax ah, adiga oo isticmaalaya

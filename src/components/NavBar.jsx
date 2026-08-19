@@ -39,7 +39,7 @@ export default function NavBar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5 group">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gold-500/60 bg-navy-800">
-            <img src={logo} alt="Jaamacadda Imam University" className="h-full w-full object-cover" />
+            <img src={logo} alt="University Imam University" className="h-full w-full object-cover" />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-parchment">
             Imam University

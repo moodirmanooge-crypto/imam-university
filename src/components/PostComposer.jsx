@@ -66,7 +66,7 @@ export default function PostComposer() {
               Maxaa cusub?
             </p>
             <p className="text-xs text-navy-500">
-              Ogeysii Post jaamacadda waxa cusub, muhiim ah ama fikradahaaga.
+              Ogeysii Post University waxa cusub, muhiim ah ama fikradahaaga.
             </p>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default function PostComposer() {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Maxaa cusub? Ogeysii Post jaamacadda..."
+          placeholder="Maxaa cusub? Ogeysii Post University..."
           rows={4}
           className="w-full resize-none rounded-xl border border-gold-300 bg-gold-50/40 px-4 py-3 text-sm outline-none focus:border-gold-500"
         />

@@ -10,11 +10,11 @@ export default function Footer() {
               <GraduationCap size={16} />
             </span>
             <span className="font-display text-base font-semibold text-parchment">
-              Jaamacadda
+              University
             </span>
           </div>
           <p className="text-xs text-navy-300">
-            © {new Date().getFullYear()} Jaamacadda. Dhammaan xuquuqda way dhowran tahay.
+            © {new Date().getFullYear()} University. Dhammaan xuquuqda way dhowran tahay.
           </p>
         </div>
       </div>
