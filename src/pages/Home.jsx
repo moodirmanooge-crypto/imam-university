@@ -64,23 +64,23 @@ const portalCards = [
 const features = [
   {
     icon: CalendarCheck2,
-    title: "Xaadirinta Toos ah",
-    desc: "Teachers ayaa fasal walba ku duubaya xaadirinta hal saf, Studentguna wuxuu si degdeg ah u arkaa taariikhdiisa.",
+    title: "Automatic Attendance",
+    desc: "**Teachers record attendance for each class in one row, while students can instantly view their attendance history.**.",
   },
   {
     icon: Users2,
-    title: "Saddex Portal",
-    desc: "Admin, Teacher iyo Student — mid kasta wuxuu leeyahay dashboard u gaar ah oo la simplify garaacay.",
+    title: "Three Portals",
+    desc: "Admin, Teacher, and Student — each user has a dedicated dashboard designed to simplify their tasks.",
   },
   {
     icon: MessagesSquare,
-    title: "Post Jaamacadda",
-    desc: "Ogeysiisyada, sawirada iyo dhacdooyinka jaamacadda — like, comment iyo share si toos ah.",
+    title: "University Posts",
+    desc: "Announcements, photos, and university updates — like, comment, and share with ease.",
   },
   {
     icon: ShieldCheck,
-    title: "Xogta Sugan",
-    desc: "Diiwaanka Studentga iyo xaadirintiisu waxay ku kaydsan yihiin nidaam ammaan leh oo server omline  ku shaqeeya.",
+    title: "Secure Data",
+    desc: "Student records and attendance data are securely stored in the system, even when the server is online.",
   },
 ];
 
