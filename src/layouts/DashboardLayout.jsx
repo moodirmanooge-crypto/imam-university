@@ -6,9 +6,9 @@ import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 
 const ROLE_LABEL = {
-  admin: "Maamule",
-  teacher: "Macalin",
-  student: "Arday",
+  admin: "Admin",
+  teacher: "Teacher",
+  student: "Student",
 };
 
 export default function DashboardLayout({ title, navItems, children }) {
